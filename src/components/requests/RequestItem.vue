@@ -2,16 +2,23 @@
 	<li>
 		<a :href="emailLink">{{ request.email }}</a>
 		<p>{{ request.message }}</p>
+		<span>
+			<base-button :onClick="() => removeRequest(request.id)">Remove request</base-button>
+		</span>
 	</li>
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
 	props: ['request'],
 	computed: {
 		emailLink() {
 			return `mailto:${this.request.email}`;
 		},
+	},
+	methods: {
+		...mapActions('requests', {removeRequest: 'removeRequest'})
 	},
 };
 </script>
@@ -35,6 +42,11 @@ a:active {
 }
 
 p {
-	margin: 0.5rem 0 0 0;
+	margin: 2rem 0;
+}
+
+span {
+	display: flex;
+	justify-content: right;
 }
 </style>

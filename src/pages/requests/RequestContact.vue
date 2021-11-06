@@ -66,15 +66,6 @@ export default {
 				const coachId = this.$route.params.coachId;
 				const coach = this.$store.getters['coaches/getCoach'](coachId);
 
-				// this.$store.dispatch({
-				// 	type: 'requests/addRequest',
-				// 	coach: {
-				// 		coachId: coach.id,
-				// 		email: this.email.val,
-				// 		message: this.message.val,
-				// 	},
-				// });
-
 				this.$store.dispatch('requests/addRequest', {
 					coachId: coach.coachId,
 					email: this.email.val,

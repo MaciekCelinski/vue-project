@@ -1,8 +1,6 @@
 export default {
   setRequests(context) {
-    fetch(
-      `${process.env.VUE_APP_DATABASE_URL}/requests.json`
-    )
+    fetch(`${process.env.VUE_APP_DATABASE_URL}/requests.json`)
       .then(data => data.json())
       .then(req => {
         const requests = [];
@@ -15,26 +13,30 @@ export default {
   },
   addRequest(context, payload) {
     const newRequest = {
-      // id: Math.floor(Math.random() * 1000000).toString(),
       coachId: payload.coachId,
       email: payload.email,
       message: payload.message
     };
     console.log('newRequest: ', newRequest);
 
-    fetch(
-      `${process.env.VUE_APP_DATABASE_URL}requests.json`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newRequest)
-      }
-    )
-      .then(data => data.json())
-      .then(res => console.log(res));
+    fetch(`${process.env.VUE_APP_DATABASE_URL}requests.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newRequest)
+    });
 
     context.commit('addRequest', newRequest);
+  },
+  removeRequest(context, payload) {
+    fetch(`${process.env.VUE_APP_DATABASE_URL}/requests/${payload}.json`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    context.commit('removeRequest', payload);
   }
 };

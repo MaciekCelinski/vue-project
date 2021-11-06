@@ -1,5 +1,5 @@
 <template>
-	<button v-if="!link" :class="mode">
+	<button @click="onClick" v-if="!link" :class="mode">
 		<slot></slot>
 	</button>
 	<router-link v-if="link" :to="to" :class="mode">
@@ -9,6 +9,7 @@
 
 <script>
 export default {
+	emits: ['onClick'],
 	props: {
 		mode: {
 			type: String,
@@ -24,6 +25,10 @@ export default {
 			type: String,
 			required: false,
 			default: '/',
+		},
+		onClick: {
+			type: Function,
+			required: false,
 		},
 	},
 };
