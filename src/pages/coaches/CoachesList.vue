@@ -2,7 +2,10 @@
 	<section>
 		<coach-filter @filtersChange="setFilters" />
 	</section>
-	<section>
+	<section v-if="isLoading">
+		<h3>Loading...</h3>
+	</section>
+	<section v-else>
 		<base-card>
 			<div class="control">
 				<base-button mode="outline">Refresh</base-button>
@@ -50,6 +53,7 @@ export default {
 	data() {
 		return {
 			activeFilters: [],
+			isLoading: false,
 		};
 	},
 	methods: {

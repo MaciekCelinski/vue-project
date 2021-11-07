@@ -4,6 +4,12 @@ export default {
     const data = await fetch(
       `${process.env.VUE_APP_DATABASE_URL}/coaches.json`
     );
+
+    if (!data.ok) {
+      const error = new Error(data.message || 'Failed to fetch!');
+      throw error;
+    }
+
     const response = await data.json();
 
     for (const key in response) {
@@ -13,13 +19,27 @@ export default {
     context.commit('setCoaches', coachesList);
   },
   setActiveCoach: async (context, payload) => {
-    if(!payload) {
+    if (!payload) {
+      if (localStorage.getItem('activeCoach')) {
+        const coachId = JSON.parse(localStorage.getItem('activeCoach'));
+        console.log('coachId');
+        context.commit('setActiveCoach', coachId);
+      }
       context.commit('setActiveCoach', '');
+      localStorage.removeItem('activeCoach');
     }
     if (payload) {
-      const allCoaches = context.getters['coaches'];
-      const activeCoach = allCoaches.find(coach => coach.email === payload);
-      context.commit('setActiveCoach', activeCoach.coachId);
+      if (localStorage.getItem('activeCoach')) {
+        context.commit('setActiveCoach', payload);
+      } else {
+        const allCoaches = context.getters['coaches'];
+        const activeCoach = allCoaches.find(coach => coach.email === payload);
+        localStorage.setItem(
+          'activeCoach',
+          JSON.stringify(activeCoach.coachId)
+        );
+        context.commit('setActiveCoach', activeCoach.coachId);
+      }
     }
   },
   registerCoach: (context, payload) => {
@@ -31,17 +51,14 @@ export default {
       areas: payload.areas,
       coachId: Math.floor(Math.random() * 1000000).toString()
     };
-    
-    fetch(
-      `${process.env.VUE_APP_DATABASE_URL}/coaches.json`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newCoach)
-      }
-    )
+
+    fetch(`${process.env.VUE_APP_DATABASE_URL}/coaches.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newCoach)
+    });
 
     context.commit('registerCoach', newCoach);
   }

@@ -1,15 +1,40 @@
 export default {
-  setRequests(context) {
-    fetch(`${process.env.VUE_APP_DATABASE_URL}/requests.json`)
-      .then(data => data.json())
-      .then(req => {
-        const requests = [];
-        for (let key in req) {
-          const request = { id: key, ...req[key] };
-          requests.push(request);
-        }
-        context.commit('setRequests', requests);
-      });
+  async setRequests(context) {
+    
+    const data = await fetch(
+      `${process.env.VUE_APP_DATABASE_URL}/requests.json`
+    );
+
+    if (!data.ok) {
+      const error = new Error(data.message || 'Failed to fetch!');
+      throw error;
+    }
+
+    const response = await data.json();
+
+    const requests = [];
+
+    for (let key in response) {
+      const request = { id: key, ...response[key] };
+      requests.push(request);
+    }
+
+    context.commit('setRequests', requests);
+
+    // fetch(`${process.env.VUE_APP_DATABASE_URL}/requests.json`)
+    //   .then(data => data.json())
+    //   .then(req => {
+    //     const requests = [];
+    //     for (let key in req) {
+    //       const request = { id: key, ...req[key] };
+    //       requests.push(request);
+    //     }
+    //     context.commit('setRequests', requests);
+    //   })
+    //   .catch(() => {
+    //     const err = new Error('Failed to fetch');
+    //     throw err;
+    //   });
   },
   addRequest(context, payload) {
     const newRequest = {
@@ -34,7 +59,7 @@ export default {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
-      },
+      }
     });
 
     context.commit('removeRequest', payload);

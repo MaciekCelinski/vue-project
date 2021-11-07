@@ -11,6 +11,8 @@ import CoachLogin from './pages/coaches/CoachLogin';
 import RequestContact from './pages/requests/RequestContact';
 import RequestReceived from './pages/requests/RequestReceived';
 
+import store from './store/index';
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -38,7 +40,13 @@ const router = createRouter({
     },
     {
       path: '/requests',
-      component: RequestReceived
+      component: RequestReceived,
+      beforeEnter(_, _2, next) {
+        const activeCoach = store.getters['coaches/getActiveCoach'];
+        if (activeCoach) {
+          next();
+        }
+      }
     },
     {
       path: '/:notFound(.*)',

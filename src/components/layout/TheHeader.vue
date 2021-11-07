@@ -21,6 +21,7 @@ export default {
 	methods: {
 		removeActiveCoach() {
 			this.$store.dispatch('coaches/setActiveCoach', '');
+			this.$router.replace('/login')
 		},
 	},
 	computed: {
